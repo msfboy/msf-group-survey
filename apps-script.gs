@@ -1,24 +1,51 @@
 /**
  * Collecte centralisée dans Google Sheets + e-mail de remerciement automatique.
- * 1. Créez un Google Sheet > Extensions > Apps Script, collez ce code.
- * 2. Renseignez GUIDE_URL et ADMIN_EMAIL ci-dessous.
- * 3. Déployer > Nouveau déploiement > Application Web
- *    (Exécuter en tant que : moi / Accès : tout le monde). Autorisez l'envoi d'e-mails.
- * 4. Copiez l'URL /exec dans la constante ENDPOINT de index.html.
- *
- * Limite : ~100 e-mails/jour avec un Gmail gratuit, ~1500 avec Google Workspace.
+ * Fonctionne aussi bien si le script est créé depuis un Google Sheet (Extensions > Apps Script)
+ * que s'il est créé directement sur script.google.com (il créera alors le Google Sheet tout seul dans votre Drive).
  */
 const GUIDE_URL   = "https://drive.google.com/file/d/1gDF2tKOUl9DMkYBRmD8ant2CDgmfMAPE/view?usp=sharing"; // lien de téléchargement du guide (Google Drive)
 const ADMIN_EMAIL = ""; // <-- optionnel : votre e-mail pour être alerté à chaque réponse
 const SENDER_NAME = "MSF GROUP";
+const SHEET_ID    = ""; // <-- optionnel : collez l'ID ou l'URL d'un Google Sheet existant (sinon automatique)
+
+function getTargetSheet() {
+  let ss = null;
+  // 1. Si un ID ou une URL de Google Sheet est renseigné dans SHEET_ID
+  if (SHEET_ID) {
+    const m = SHEET_ID.match(/[-\w]{25,}/);
+    if (m) ss = SpreadsheetApp.openById(m[0]);
+  }
+  // 2. Sinon, si le script est rattaché à un Google Sheet (Extensions > Apps Script)
+  if (!ss) {
+    ss = SpreadsheetApp.getActiveSpreadsheet();
+  }
+  // 3. Sinon (script autonome sur script.google.com), on récupère ou crée automatiquement le Google Sheet dans Drive
+  if (!ss) {
+    const props = PropertiesService.getScriptProperties();
+    const savedId = props.getProperty("MSF_SHEET_ID");
+    if (savedId) {
+      try { ss = SpreadsheetApp.openById(savedId); } catch (err) { ss = null; }
+    }
+    if (!ss) {
+      ss = SpreadsheetApp.create("Enquête MSF GROUP - Réponses");
+      props.setProperty("MSF_SHEET_ID", ss.getId());
+      Logger.log("Nouveau Google Sheet créé dans votre Drive : " + ss.getUrl());
+    }
+  }
+  return ss.getSheets()[0];
+}
 
 function doPost(e) {
-  // Verrou : évite les conflits si plusieurs personnes envoient en même temps.
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
   let d;
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    const sheet = getTargetSheet();
+    // Si on clique sur "Exécuter" dans l'éditeur Apps Script (sans données envoyées par le formulaire)
+    if (!e || !e.postData || !e.postData.contents) {
+      Logger.log("Connexion au Google Sheet réussie : " + sheet.getParent().getUrl());
+      return ContentService.createTextOutput("Script prêt. Sheet : " + sheet.getParent().getUrl());
+    }
     d = JSON.parse(e.postData.contents);
     let headers = sheet.getLastColumn()
       ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0] : [];
@@ -32,8 +59,8 @@ function doPost(e) {
   }
 
   // E-mails : une erreur d'envoi ne doit jamais faire perdre la réponse déjà enregistrée.
-  try { if (d.email && /^\S+@\S+\.\S+$/.test(d.email)) sendThanks(d); } catch (err) { console.error(err); }
-  try { if (ADMIN_EMAIL) sendAlert(d); } catch (err) { console.error(err); }
+  try { if (d && d.email && /^\S+@\S+\.\S+$/.test(d.email)) sendThanks(d); } catch (err) { console.error(err); }
+  try { if (d && ADMIN_EMAIL) sendAlert(d); } catch (err) { console.error(err); }
   return ContentService.createTextOutput('ok');
 }
 
