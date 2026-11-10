@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Résultats de l'enquête</title>
+<style>
+body{margin:0;background:#eef1f6;font-family:'Segoe UI',Arial,sans-serif;color:#202124}
+.w{max-width:1000px;margin:0 auto;padding:20px}
+h1{color:#1a3a6b}
+.card{background:#fff;border:1px solid #dadce0;border-radius:10px;padding:20px;margin-bottom:14px}
+.kpi{display:flex;gap:12px;flex-wrap:wrap}.kpi div{flex:1;min-width:150px;background:#fff;border:1px solid #dadce0;border-top:4px solid #c8962e;border-radius:8px;padding:14px}
+.kpi b{font-size:28px;color:#1a3a6b;display:block}
+.bar{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+.bar span.l{width:260px}.bar i{display:block;height:14px;background:#1a3a6b;border-radius:3px}
+button{background:#1a3a6b;color:#fff;border:0;border-radius:6px;padding:9px 18px;font-weight:600;cursor:pointer;margin-right:8px}
+button.r{background:#d93025}
+</style></head><body><div class="w">
+<h1>Résultats de l'enquête</h1>
+<p>Affiche les réponses enregistrées dans <b>ce navigateur</b>. Pour centraliser toutes les réponses, utilisez <code>apps-script.gs</code>.</p>
+<div class="kpi" id="kpi"></div><br>
+<button id="csv">Exporter CSV</button><button id="json">Exporter JSON</button><button class="r" id="clr">Effacer</button>
+<div id="charts"></div></div>
+<script>
+const KEY='survey_langues';
+const data=JSON.parse(localStorage.getItem(KEY)||'[]');
+const arr=v=>v==null?[]:[].concat(v);
+const count=k=>{const c={};data.forEach(r=>arr(r[k]).forEach(v=>{if(v&&v!=='__other')c[v]=(c[v]||0)+1}));return Object.entries(c).sort((a,b)=>b[1]-a[1])};
+const avg=k=>{const v=data.map(r=>+r[k]).filter(Boolean);return v.length?(v.reduce((a,b)=>a+b)/v.length).toFixed(1):'–'};
+document.getElementById('kpi').innerHTML=`<div><b>${data.length}</b>Réponses</div><div><b>${avg('confiance')}/5</b>Confiance moyenne</div><div><b>${avg('interet')}/5</b>Intérêt pour l'IA</div>`;
+const T={statut:'Statut',langue:'Langue visée',motif:'Motivations',obstacles:'Obstacles',creneaux:'Créneaux de disponibilité',jours:'Jours de disponibilité',defis:'Défis de croissance',iaAide:'Aide attendue de l\'IA',format:'Format préféré',budget:'Budget'};
+document.getElementById('charts').innerHTML=Object.entries(T).map(([k,t])=>{
+ const c=count(k);const m=c[0]?c[0][1]:1;
+ return `<div class="card"><h3>${t}</h3>${c.map(([l,n])=>`<div class="bar"><span class="l">${l}</span><i style="width:${n/m*300}px"></i>${n}</div>`).join('')||'<small>Aucune donnée</small>'}</div>`}).join('');
+function dl(name,txt,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(["\ufeff"+txt],{type}));a.download=name;a.click()}
+document.getElementById('json').onclick=()=>dl('reponses.json',JSON.stringify(data,null,2),'application/json');
+document.getElementById('csv').onclick=()=>{
+ const cols=[...new Set(data.flatMap(Object.keys))];
+ const esc=v=>'"'+arr(v).join(' | ').replace(/"/g,'""')+'"';
+ dl('reponses.csv',[cols.join(','),...data.map(r=>cols.map(c=>esc(r[c])).join(','))].join('\n'),'text/csv');
+};
+document.getElementById('clr').onclick=()=>{if(confirm('Effacer toutes les réponses locales ?')){localStorage.removeItem(KEY);location.reload()}};
+</script></body></html>
+

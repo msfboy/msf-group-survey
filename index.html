@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSF GROUP · Enquête</title>
+<style>
+:root{--p:#1a3a6b;--a:#c8962e;--bg:#eef1f6;--card:#fff;--tx:#202124;--mu:#5f6368;--bd:#dadce0;--err:#d93025}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Segoe UI',Roboto,Arial,sans-serif;color:var(--tx);line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:16px 12px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:24px 28px;margin-bottom:14px}
+.head{border-top:10px solid var(--p);padding-top:22px}
+.head h1{margin:0 0 8px;font-size:28px;color:var(--p)}
+.head p{margin:6px 0;color:var(--mu);font-size:14px}
+.req-note{color:var(--err);font-size:13px;margin-top:12px}
+.sec-title{background:var(--p);color:#fff;border-radius:10px 10px 0 0;padding:14px 28px;margin:-24px -28px 20px;font-size:18px;font-weight:600}
+.sec-title small{display:block;font-weight:400;opacity:.8;font-size:13px}
+.q{margin-bottom:26px}
+.q:last-child{margin-bottom:0}
+.q label.t{display:block;font-size:15px;font-weight:600;margin-bottom:4px}
+.q .h{font-size:12.5px;color:var(--mu);margin-bottom:8px}
+.q.req label.t::after{content:" *";color:var(--err)}
+input[type=text],input[type=email],input[type=tel],select,textarea{width:100%;font:inherit;font-size:14px;padding:9px 2px;border:0;border-bottom:1px solid var(--bd);background:transparent;outline:none;transition:.2s}
+textarea{border:1px solid var(--bd);border-radius:6px;padding:10px;min-height:90px;resize:vertical}
+select{border:1px solid var(--bd);border-radius:6px;padding:10px;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--p);box-shadow:0 1px 0 var(--p)}
+textarea:focus,select:focus{box-shadow:0 0 0 1px var(--p)}
+.opt{display:flex;align-items:center;gap:10px;padding:7px 4px;cursor:pointer;font-size:14px;border-radius:6px}
+.opt:hover{background:#f4f6fa}
+.opt input{accent-color:var(--p);width:18px;height:18px;flex:none}
+.other-in{margin-left:30px;width:calc(100% - 30px);display:none}
+.scale{display:flex;justify-content:space-between;gap:4px;margin-top:6px}
+.scale label{flex:1;text-align:center;font-size:13px;cursor:pointer}
+.scale input{display:block;margin:6px auto 0;accent-color:var(--p);width:18px;height:18px}
+.scale-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--mu);margin-top:4px}
+table.grid{width:100%;border-collapse:collapse;font-size:13px}
+table.grid th,table.grid td{padding:8px 4px;text-align:center;border-bottom:1px solid #eee}
+table.grid td:first-child,table.grid th:first-child{text-align:left;font-weight:500}
+table.grid input{accent-color:var(--p);width:17px;height:17px}
+.err .t{color:var(--err)}
+.err-msg{display:none;color:var(--err);font-size:12.5px;margin-top:6px}
+.q.err .err-msg{display:block}
+.q.err{border-left:3px solid var(--err);padding-left:12px}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+button{font:inherit;font-weight:600;font-size:14px;border:0;border-radius:6px;padding:10px 26px;cursor:pointer}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:#12294d}
+.btn-s{background:transparent;color:var(--p)}.btn-s:hover{background:#e3e9f4}
+.prog{height:6px;background:#d6dbe6;border-radius:3px;overflow:hidden;margin:0 0 12px}
+.prog div{height:100%;background:var(--a);width:0;transition:.3s}
+.step{font-size:12.5px;color:var(--mu);margin-bottom:4px}
+.sec{display:none}.sec.on{display:block}
+.thanks{text-align:center;padding:40px 20px}
+.thanks h2{color:var(--p)}
+.check{width:64px;height:64px;border-radius:50%;background:var(--a);color:#fff;font-size:34px;line-height:64px;margin:0 auto 14px}
+.foot{text-align:center;font-size:12px;color:var(--mu);margin-top:16px}
+/* ===== EFFETS IA ===== */
+body{background:linear-gradient(135deg,#e9eef8,#f6f1e6,#e6eef8);background-size:300% 300%;animation:bgmove 18s ease infinite;position:relative;overflow-x:hidden}
+@keyframes bgmove{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:.35;z-index:0;pointer-events:none;animation:float 14s ease-in-out infinite}
+.b1{width:360px;height:360px;background:#1a3a6b;top:-120px;left:-100px}
+.b2{width:320px;height:320px;background:#c8962e;bottom:-100px;right:-80px;animation-delay:-6s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,30px) scale(1.15)}}
+.wrap{position:relative;z-index:1}
+.card{box-shadow:0 4px 24px rgba(26,58,107,.08);transition:transform .3s,box-shadow .3s;backdrop-filter:blur(6px)}
+.card:hover{box-shadow:0 10px 34px rgba(26,58,107,.16)}
+.head{border-top:0;position:relative;overflow:hidden;animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.head::before{content:"";position:absolute;top:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#1a3a6b,#c8962e,#2f6fd6,#c8962e,#1a3a6b);background-size:300% 100%;animation:slide 4s linear infinite}
+@keyframes slide{to{background-position:300% 0}}
+.head h1{background:linear-gradient(90deg,#1a3a6b,#2f6fd6,#c8962e,#1a3a6b);background-size:300% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:slide 8s linear infinite}
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.5px;color:#1a3a6b;background:#e8eefb;border:1px solid #c9d6f2;border-radius:20px;padding:5px 12px;margin-bottom:12px}
+.badge i{width:8px;height:8px;border-radius:50%;background:#1fbf6a;box-shadow:0 0 0 0 rgba(31,191,106,.6);animation:pulse 1.6s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(31,191,106,0)}100%{box-shadow:0 0 0 0 rgba(31,191,106,0)}}
+.gift{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(200,150,46,0)}50%{box-shadow:0 0 22px rgba(200,150,46,.45)}}
+.sec.on{animation:rise .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
+.sec-title{background:linear-gradient(120deg,#1a3a6b,#2a5298,#1a3a6b);background-size:200% 100%;animation:slide 7s linear infinite}
+.q{animation:fadeq .5s both}
+.q:nth-child(2){animation-delay:.05s}.q:nth-child(3){animation-delay:.1s}.q:nth-child(4){animation-delay:.15s}.q:nth-child(5){animation-delay:.2s}.q:nth-child(6){animation-delay:.25s}.q:nth-child(7){animation-delay:.3s}.q:nth-child(8){animation-delay:.35s}
+@keyframes fadeq{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.opt{transition:.2s;border:1px solid transparent}
+.opt:hover{background:#eef3fc;transform:translateX(5px);border-color:#d3def5}
+.opt:has(input:checked){background:linear-gradient(90deg,#e6eefc,#fff6e2);border-color:#c8962e;font-weight:600;transform:translateX(5px)}
+input[type=text],input[type=email],input[type=tel]{transition:.25s}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus{border-bottom:2px solid #c8962e;background:#fafbff;box-shadow:none;padding-left:8px}
+textarea:focus,select:focus{box-shadow:0 0 0 3px rgba(26,58,107,.15)}
+.scale label{border-radius:8px;padding:8px 0;transition:.2s}
+.scale label:hover{background:#eef3fc;transform:translateY(-3px)}
+.scale label:has(input:checked){background:#1a3a6b;color:#fff;transform:scale(1.12);box-shadow:0 6px 14px rgba(26,58,107,.3)}
+.scale label:has(input:checked) input{accent-color:#c8962e}
+table.grid tr:hover td{background:#f3f6fc}
+button{position:relative;overflow:hidden;transition:.25s}
+.btn-p{background:linear-gradient(90deg,#1a3a6b,#2f6fd6);box-shadow:0 6px 16px rgba(26,58,107,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(26,58,107,.4);background:linear-gradient(90deg,#12294d,#1a3a6b)}
+.btn-p::after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3s infinite}
+@keyframes shine{to{left:140%}}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.5);transform:scale(0);animation:rip .6s linear;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+.prog{height:8px;box-shadow:inset 0 1px 3px rgba(0,0,0,.1)}
+.prog div{background:linear-gradient(90deg,#c8962e,#f0c75e,#c8962e);background-size:200% 100%;animation:slide 2s linear infinite;box-shadow:0 0 12px rgba(200,150,46,.7)}
+.q.err{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.check{animation:pop .7s cubic-bezier(.2,1.6,.4,1) both,glow 2s 1s infinite}
+@keyframes pop{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
+.thanks{animation:rise .7s both}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){.card{padding:18px}.sec-title{margin:-18px -18px 16px;padding:12px 18px}.scale label{font-size:11px}}
+</style>
+</head>
+<body>
+<canvas id="net"></canvas><canvas id="confetti"></canvas>
+<div class="blob b1"></div><div class="blob b2"></div>
+<div class="wrap">
+<div class="card head" id="intro">
+<div class="badge"><i></i>MSF GROUP · Académie Langues & IA appliquée</div>
+<p style="color:var(--tx)">Bonjour,</p>
+<p style="color:var(--tx)"><b>MSF GROUP</b> est une académie d'apprentissage de langues et d'intelligence artificielle appliquée, qui a pour mission d'accompagner les individus et les PME/PMI dans l'atteinte de leurs résultats, tout en faisant <b>moins mais mieux</b> pour une meilleure performance. Notre mission est de concevoir des programmes ultra-pratiques et des solutions sur-mesure pour vous propulser vers le succès en <b>90 jours</b>.</p>
+<p style="color:var(--tx)">Afin de mieux comprendre vos réalités, vos blocages et vos ambitions, nous vous invitons à répondre à cette enquête (<b>durée : 3 minutes</b>). Vos réponses nous permettront de développer des formations et des outils parfaitement adaptés à vos besoins.</p>
+<p class="gift" style="background:#fff8e6;border-left:4px solid var(--a);padding:10px 14px;border-radius:4px;color:var(--tx)">🎁 En guise de remerciement pour votre temps, chaque participant recevra <b>gratuitement par WhatsApp</b> notre « <b>Guide Pratique MSF des expressions clés pour booster votre parcours</b> » dès la clôture de l'enquête.</p>
+<p style="color:var(--tx)">Merci pour votre précieuse collaboration !<br><i>— L'équipe du GROUPE MSF</i></p>
+<div class="req-note">* Indique une question obligatoire</div>
+</div>
+
+<div class="prog"><div id="bar"></div></div>
+<div class="step" id="step"></div>
+
+<form id="f" novalidate>
+
+<!-- SECTION 1 -->
+<div class="card sec on">
+<div class="sec-title">Section 1 · Votre profil<small>Quelques informations pour mieux vous connaître</small></div>
+<div class="q req" data-type="text"><label class="t">Nom complet</label><input type="text" name="nom" placeholder="Votre réponse"><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="text"><label class="t">Adresse e-mail</label><input type="email" name="email" placeholder="Votre réponse"><div class="err-msg">Saisissez une adresse e-mail valide.</div></div>
+<div class="q req" data-type="text"><label class="t">Numéro WhatsApp</label><div class="h">Pour vous envoyer gratuitement votre Guide Pratique MSF (avec l'indicatif pays, ex. +237…).</div><input type="tel" name="tel" placeholder="Votre réponse"><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="text"><label class="t">Pays et ville de résidence</label><input type="text" name="lieu" placeholder="Votre réponse"><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="radio"><label class="t">Tranche d'âge</label>
+<div data-group="age"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="radio"><label class="t">Quel est votre statut ?</label>
+<div data-group="statut" data-other="1"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+</div>
+
+<!-- SECTION 2 -->
+<div class="card sec">
+<div class="sec-title">Section 2 · Votre niveau actuel<small>Anglais et allemand</small></div>
+<div class="q req" data-type="radio"><label class="t">Quelle(s) langue(s) souhaitez-vous apprendre ou améliorer ?</label>
+<div data-group="langue"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="grid"><label class="t">Évaluez votre niveau actuel</label><div class="h">Choisissez un niveau pour chaque langue.</div>
+<table class="grid" id="gridNiv"></table><div class="err-msg">Veuillez répondre pour chaque langue.</div></div>
+<div class="q req" data-type="checkbox"><label class="t">Pourquoi voulez-vous parler ces langues ?</label><div class="h">Plusieurs réponses possibles.</div>
+<div data-group="motif" data-other="1"></div><div class="err-msg">Sélectionnez au moins une réponse.</div></div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="card sec">
+<div class="sec-title">Section 3 · Vos blocages<small>Pourquoi est-ce difficile de parler ?</small></div>
+<div class="q req" data-type="checkbox"><label class="t">Quels sont vos principaux obstacles ?</label><div class="h">Cochez tout ce qui s'applique.</div>
+<div data-group="obstacles" data-other="1"></div><div class="err-msg">Sélectionnez au moins une réponse.</div></div>
+<div class="q req" data-type="scale"><label class="t">À quel point manquez-vous de confiance pour parler ?</label>
+<div class="scale" data-scale="confiance"></div><div class="scale-lbl"><span>Aucune confiance</span><span>Très confiant(e)</span></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="checkbox"><label class="t">Quels sont vos créneaux horaires de disponibilité ?</label><div class="h">Plusieurs réponses possibles (heure locale).</div>
+<div data-group="creneaux"></div><div class="err-msg">Sélectionnez au moins un créneau.</div></div>
+<div class="q req" data-type="checkbox"><label class="t">Quels jours êtes-vous disponible ?</label>
+<div data-group="jours"></div><div class="err-msg">Sélectionnez au moins un jour.</div></div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="card sec">
+<div class="sec-title">Section 4 · Business & croissance<small>Si vous avez une activité ou un projet</small></div>
+<div class="q req" data-type="radio"><label class="t">Avez-vous une activité / un business ?</label>
+<div data-group="business"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q" data-type="checkbox"><label class="t">Vos principaux défis de croissance</label>
+<div data-group="defis" data-other="1"></div></div>
+<div class="q" data-type="checkbox"><label class="t">Où l'anglais / l'allemand vous ferait-il gagner des opportunités ?</label>
+<div data-group="opportunites" data-other="1"></div></div>
+</div>
+
+<!-- SECTION 5 -->
+<div class="card sec">
+<div class="sec-title">Section 5 · L'IA à votre service<small>Vos attentes vis-à-vis de l'Intelligence Artificielle</small></div>
+<div class="q req" data-type="checkbox"><label class="t">Comment l'IA pourrait-elle vous aider le plus ?</label>
+<div data-group="iaAide" data-other="1"></div><div class="err-msg">Sélectionnez au moins une réponse.</div></div>
+<div class="q req" data-type="radio"><label class="t">Budget mensuel que vous seriez prêt(e) à investir</label>
+<div data-group="budget"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q req" data-type="scale"><label class="t">Intérêt pour un assistant IA de coaching linguistique et business</label>
+<div class="scale" data-scale="interet"></div><div class="scale-lbl"><span>Pas intéressé(e)</span><span>Très intéressé(e)</span></div><div class="err-msg">Cette question est obligatoire.</div></div>
+<div class="q" data-type="long"><label class="t">Vos attentes, suggestions ou commentaires</label><textarea name="commentaires" placeholder="Votre réponse"></textarea></div>
+<div class="q req" data-type="radio"><label class="t">Acceptez-vous d'être recontacté(e) pour une solution adaptée ?</label>
+<div data-group="contact"></div><div class="err-msg">Cette question est obligatoire.</div></div>
+</div>
+
+<div class="nav">
+<button type="button" class="btn-s" id="prev">Retour</button>
+<button type="button" class="btn-p" id="next">Suivant</button>
+</div>
+</form>
+
+<div class="card thanks" id="thanks" style="display:none">
+<div class="check">✓</div>
+<h2>Merci pour votre participation !</h2>
+<p>Votre réponse a été enregistrée. Vous recevrez gratuitement par WhatsApp le « Guide Pratique MSF des expressions clés pour booster votre parcours » dès la clôture de l'enquête.</p><p><i>— L'équipe du GROUPE MSF</i></p>
+<button class="btn-s" id="again" type="button">Envoyer une autre réponse</button>
+<button class="btn-s" id="dl" type="button">Télécharger ma réponse</button>
+</div>
+<div class="foot">Ne communiquez jamais de mots de passe via ce formulaire.</div>
+</div>
+
+<script>
+// ===== CONFIG : mettez ici l'URL de votre backend / Google Apps Script / Formspree pour recevoir les réponses =====
+const ENDPOINT = "";
+
+const OPT = {
+ age:["Moins de 18 ans","18 – 24 ans","25 – 34 ans","35 – 44 ans","45 – 54 ans","55 ans et plus"],
+ statut:["Étudiant(e)","Salarié(e) du privé","Fonctionnaire / secteur public","Entrepreneur / chef d'entreprise","Freelance / indépendant(e)","En recherche d'emploi"],
+ langue:["Anglais","Allemand","Les deux"],
+ motif:["Développer mon business","Trouver un emploi / évoluer","Études à l'étranger","Voyager / s'installer à l'étranger","Communiquer avec clients et partenaires","Certifications (IELTS, TOEFL, Goethe, TELC)","Passion / développement personnel"],
+ duree:["Je n'ai jamais commencé","Moins de 6 mois","6 mois à 2 ans","Plus de 2 ans"],
+ methodes:["Cours en présentiel","Applications mobiles","Vidéos YouTube","Cours en ligne avec professeur","Auto-apprentissage (livres)","Outils d'IA","Aucune"],
+ obstacles:["Peur de faire des erreurs / timidité","Manque de vocabulaire","Grammaire trop complexe","Difficulté de compréhension orale","Manque de pratique avec des natifs","Manque de temps","Coût des formations","Manque de motivation / régularité","Pas de méthode adaptée à mon métier","Prononciation"],
+ temps:["Moins de 2 h","2 à 5 h","5 à 10 h","Plus de 10 h"],
+ creneaux:["Tôt le matin (5h – 8h)","Matinée (8h – 12h)","Pause déjeuner (12h – 14h)","Après-midi (14h – 18h)","Soirée (18h – 21h)","Nuit (après 21h)","Variable / selon mon planning"],
+ jours:["Lundi – Vendredi","Samedi","Dimanche","Tous les jours"],
+ business:["Oui, activité en cours","J'ai un projet en préparation","Non, mais je souhaite en créer un","Non"],
+ anciennete:["Moins d'1 an","1 à 3 ans","3 à 10 ans","Plus de 10 ans"],
+ defis:["Manque de clients","Difficulté à accéder aux marchés internationaux","Communication avec fournisseurs étrangers","Marketing / visibilité","Gestion financière","Manque d'équipe qualifiée","Manque de réseau / partenaires"],
+ opportunites:["Vendre à l'international","Négocier avec partenaires étrangers","Participer à des salons / événements","Marketing et contenus multilingues","Importer / exporter","Candidater à des appels d'offres","Recruter / collaborer à distance"],
+ objectif:["Stabiliser l'existant","Croissance de 20 à 50 %","Doubler le chiffre d'affaires","Conquérir l'international"],
+ iaUsage:["Oui, régulièrement","Oui, occasionnellement","Non, mais curieux(se)","Non, pas intéressé(e)"],
+ iaAide:["Tuteur de conversation 24h/24","Correction de mes textes et e-mails","Traduction et vocabulaire métier","Simulation de négociations / entretiens","Préparation aux certifications","Rédaction de contenus marketing","Plan d'apprentissage personnalisé","Conseils de croissance pour mon business"],
+ format:["Application mobile","Chatbot WhatsApp / Telegram","Plateforme web","Cours en direct + IA","Coaching individuel + IA"],
+ budget:["Gratuit uniquement","Moins de 10 000 FCFA (~15 €)","10 000 – 30 000 FCFA (15–45 €)","30 000 – 75 000 FCFA (45–115 €)","Plus de 75 000 FCFA"],
+ contact:["Oui, par e-mail","Oui, par WhatsApp / téléphone","Non, merci"]
+};
+const ONE=["age","statut","langue","duree","temps","business","anciennete","objectif","iaUsage","format","budget","contact"];
+
+// Render choice groups
+document.querySelectorAll('[data-group]').forEach(g=>{
+ const n=g.dataset.group, type=ONE.includes(n)?'radio':'checkbox';
+ let h=OPT[n].map(o=>`<label class="opt"><input type="${type}" name="${n}" value="${o}"><span>${o}</span></label>`).join('');
+ if(g.dataset.other) h+=`<label class="opt"><input type="${type}" name="${n}" value="__other"><span>Autre :</span></label><input type="text" class="other-in" name="${n}_autre" placeholder="Précisez">`;
+ g.innerHTML=h;
+});
+document.querySelectorAll('[data-scale]').forEach(s=>{
+ s.innerHTML=[1,2,3,4,5].map(i=>`<label>${i}<input type="radio" name="${s.dataset.scale}" value="${i}"></label>`).join('');
+});
+// Niveau grid
+const lv=["Débutant (A1-A2)","Intermédiaire (B1-B2)","Avancé (C1-C2)","Aucun"];
+document.getElementById('gridNiv').innerHTML='<tr><th></th>'+lv.map(l=>`<th>${l}</th>`).join('')+'</tr>'+
+ ['Anglais','Allemand'].map((l,i)=>`<tr><td>${l}</td>${lv.map(v=>`<td><input type="radio" name="niv_${i?'de':'en'}" value="${v}"></td>`).join('')}</tr>`).join('');
+
+// "Autre" toggling
+document.addEventListener('change',e=>{
+ const g=e.target.closest('[data-group]'); if(!g)return;
+ const inp=g.querySelector('.other-in'); if(!inp)return;
+ const oc=g.querySelector('input[value="__other"]');
+ inp.style.display=oc.checked?'block':'none'; if(oc.checked)inp.focus();
+});
+
+const secs=[...document.querySelectorAll('.sec')];
+let cur=0;
+const $=id=>document.getElementById(id);
+function show(i){
+ secs.forEach((s,k)=>s.classList.toggle('on',k===i));
+ $('prev').style.visibility=i?'visible':'hidden';
+ $('next').textContent=i===secs.length-1?'Envoyer':'Suivant';
+ $('bar').style.width=((i)/secs.length*100)+'%';
+ $('step').textContent=`Section ${i+1} sur ${secs.length}`;
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function valid(sec){
+ let ok=true;
+ sec.querySelectorAll('.q.req').forEach(q=>{
+  let good=true; const t=q.dataset.type;
+  if(t==='text'){const i=q.querySelector('input');good=i.value.trim()!==''&&(i.type!=='email'||/^\S+@\S+\.\S+$/.test(i.value));}
+  else if(t==='grid'){good=!!q.querySelector('input[name=niv_en]:checked')&&!!q.querySelector('input[name=niv_de]:checked');}
+  else good=!!q.querySelector('input:checked');
+  q.classList.toggle('err',!good); if(!good&&ok){ok=false;q.scrollIntoView({behavior:'smooth',block:'center'});}
+ });
+ return ok;
+}
+function collect(){
+ const d={}; const fd=new FormData($('f'));
+ for(const [k,v] of fd.entries()){ if(k in d){d[k]=[].concat(d[k],v)} else d[k]=v; }
+ d.horodatage=new Date().toISOString(); return d;
+}
+$('next').onclick=async()=>{
+ if(!valid(secs[cur]))return;
+ if(cur<secs.length-1){cur++;show(cur);return;}
+ const data=collect();
+ const all=JSON.parse(localStorage.getItem('survey_langues')||'[]'); all.push(data);
+ localStorage.setItem('survey_langues',JSON.stringify(all));
+ window.lastData=data;
+ if(ENDPOINT){try{await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(data)})}catch(e){console.warn(e)}}
+ $('f').style.display='none';$('intro').style.display='none';document.querySelector('.prog').style.display='none';$('step').style.display='none';
+ $('thanks').style.display='block';window.scrollTo(0,0);
+};
+$('prev').onclick=()=>{if(cur>0){cur--;show(cur)}};
+$('again').onclick=()=>location.reload();
+$('dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(window.lastData,null,2)],{type:'application/json'}));a.download='ma-reponse.json';a.click();};
+document.addEventListener('change',e=>{const q=e.target.closest('.q');if(q)q.classList.remove('err')});
+show(0);
+
+// ===== EFFETS : réseau neuronal animé =====
+(function(){
+ const c=$('net'),x=c.getContext('2d');let W,H,P=[];
+ const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight;P=Array.from({length:Math.min(70,Math.floor(W*H/18000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4}))};
+ rs();addEventListener('resize',rs);
+ (function loop(){x.clearRect(0,0,W,H);
+  P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+   x.fillStyle='rgba(26,58,107,.5)';x.beginPath();x.arc(p.x,p.y,2,0,7);x.fill();});
+  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const d=Math.hypot(P[i].x-P[j].x,P[i].y-P[j].y);
+   if(d<130){x.strokeStyle=`rgba(200,150,46,${.35*(1-d/130)})`;x.beginPath();x.moveTo(P[i].x,P[i].y);x.lineTo(P[j].x,P[j].y);x.stroke();}}
+  requestAnimationFrame(loop)})();
+})();
+// ===== EFFETS : ondulation sur boutons =====
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height),sp=document.createElement('span');
+ sp.className='ripple';sp.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;
+ b.appendChild(sp);setTimeout(()=>sp.remove(),600)});
+// ===== EFFETS : confettis à l'envoi =====
+function confetti(){
+ const c=$('confetti'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;
+ const col=['#1a3a6b','#c8962e','#2f6fd6','#f0c75e','#1fbf6a'];
+ const P=Array.from({length:160},()=>({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*16,vy:Math.random()*-14-3,s:Math.random()*8+4,c:col[Math.random()*5|0],r:Math.random()*6,vr:(Math.random()-.5)*.4}));
+ let f=0;(function a(){x.clearRect(0,0,c.width,c.height);
+  P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);x.restore()});
+  if(++f<220)requestAnimationFrame(a);else x.clearRect(0,0,c.width,c.height)})();
+}
+const _n=$('next').onclick;
+$('next').onclick=async function(){const was=cur;await _n();if($('thanks').style.display==='block')confetti();};
+</script>
+</body>
+</html>
+
